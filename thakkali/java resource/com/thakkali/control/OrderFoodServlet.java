@@ -2,8 +2,6 @@ package com.thakkali.control;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -17,29 +15,18 @@ import javax.servlet.http.HttpSession;
 import com.thakkali.dao.OrderDao;
 import com.thakkali.model.Orders;
 import com.thakkali.model.User;
+import com.thakkali.utils.JDBCConnection;
 
 public class OrderFoodServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Connection connection;
-	private static final String url = "jdbc:mysql://localhost:3306/thakkali";
-	private static final String username = "root";
-	private static final String password = "root";
-
+	
     public OrderFoodServlet() {
         super();
     }
 
 	public void init(ServletConfig config) throws ServletException {
-		try { 
-			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection(url, username, password); 
-		}
-		catch (SQLException | ClassNotFoundException e) { e.printStackTrace(); }
-	}
-
-	public void destroy() {
-		try { connection.close(); }
-		catch (SQLException e) { e.printStackTrace(); }
+		connection = JDBCConnection.getDatabaseConnection();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -48,6 +35,7 @@ public class OrderFoodServlet extends HttpServlet {
 		Orders[] orders = new Orders[values.length];
 		String[] names = new String[values.length];
 		float[] prices = new float[values.length];
+		int[] availabilities = new int[values.length];
 		
 		HttpSession session = request.getSession();
 		
@@ -63,6 +51,7 @@ public class OrderFoodServlet extends HttpServlet {
 			food_id = Integer.parseInt(s_values[0]);
 			names[i] = s_values[1];
 			prices[i] = Float.parseFloat(s_values[2]);
+			availabilities[i] = Integer.parseInt(s_values[3]);
 			
 			orders[i].setCustomer_id(customer.getUser_id());
 			orders[i].setOrder_id(order_id);
@@ -75,6 +64,7 @@ public class OrderFoodServlet extends HttpServlet {
 		session.setAttribute("orders", orders);
 		session.setAttribute("names", names);
 		session.setAttribute("prices", prices);
+		session.setAttribute("availabilities", availabilities);
 		response.sendRedirect("confirm_order.jsp");
 	}
 

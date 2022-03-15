@@ -8,7 +8,9 @@ public class Foods extends User{
 	protected String description;
 	protected float price;
 	protected String image_url;
+
 	protected String image_alt;
+	protected int availability;
 	
 	public int getFood_id() {
 		return food_id;
@@ -72,6 +74,14 @@ public class Foods extends User{
 
 	public void setImage_alt(String image_alt) {
 		this.image_alt = image_alt;
+	}
+	
+	public void setAvailability(int availability) {
+		this.availability = availability;
+	}
+	
+	public int getAvailability() {
+		return this.availability;
 	}
 
 	public Foods() {

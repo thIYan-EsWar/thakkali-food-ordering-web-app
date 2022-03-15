@@ -14,7 +14,7 @@ public class TakeBackServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.sendRedirect("d_foods.jsp");
+		response.sendRedirect("home.jsp");
 	}
 
 }

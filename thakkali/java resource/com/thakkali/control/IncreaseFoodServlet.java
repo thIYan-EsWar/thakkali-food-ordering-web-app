@@ -15,11 +15,12 @@ import com.thakkali.dao.FoodDao;
 import com.thakkali.model.User;
 import com.thakkali.utils.JDBCConnection;
 
-public class FoodsDeleteServlet extends HttpServlet {
+
+public class IncreaseFoodServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static Connection connection;
-	
-    public FoodsDeleteServlet() {
+	private Connection connection;
+
+    public IncreaseFoodServlet() {
         super();
     }
 
@@ -29,25 +30,29 @@ public class FoodsDeleteServlet extends HttpServlet {
 
 	public void destroy() {
 		try {
-			connection.close();			
-		} catch (SQLException e) { e.printStackTrace(); } 
-		
+			connection.close();
+		} catch (SQLException e) { e.printStackTrace(); }
 	}
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String[] s_food_ids = request.getParameterValues("select_foods");
-		int[] food_ids = new int[s_food_ids.length];
-		HttpSession session = request.getSession();
 		
+		String[] values = request.getParameterValues("values");
+		HttpSession session = request.getSession();
 		User manager = (User) session.getAttribute("user");
 		
-		for (int i = 0; i < food_ids.length; i++) {
-			food_ids[i] = Integer.parseInt(s_food_ids[i]);
+		for (String value: values) {
+			String[] strValue = value.split(",");
+			
+			int food_id = Integer.parseInt(strValue[0]);
+			String sCount = request.getParameter(strValue[0]);
+			int count = Integer.parseInt(sCount.length() > 0? sCount: "0") + Integer.parseInt(strValue[1]);
+			
+			FoodDao.updateFoodCount(connection, food_id, count);			
 		}
 		
-		FoodDao.deleteFoods(connection, food_ids, manager.getUser_id());
 		session.setAttribute("menu", FoodDao.getFoodsForManagers(connection, manager.getUser_id()));
 		response.sendRedirect("d_admin.jsp");
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

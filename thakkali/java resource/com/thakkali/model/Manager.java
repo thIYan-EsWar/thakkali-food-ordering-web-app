@@ -47,6 +47,7 @@ public class Manager extends User {
 		this.email_id = user.email_id;
 		this.contact_number = user.contact_number;
 		this.user_type = user.user_type;
+		this.password = user.getPassword();
 	}
 
 	@Override

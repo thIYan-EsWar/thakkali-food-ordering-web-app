@@ -2,6 +2,8 @@ package com.thakkali.control;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -9,14 +11,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
 import com.thakkali.dao.FoodDao;
+import com.thakkali.model.Foods;
 import com.thakkali.utils.JDBCConnection;
 
-public class SearchFoodServlet extends HttpServlet {
+public class GetFoodServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static Connection connection;
+	private Connection connection;
 
-    public SearchFoodServlet() {
+    public GetFoodServlet() {
         super();
     }
 
@@ -24,14 +28,20 @@ public class SearchFoodServlet extends HttpServlet {
 		connection = JDBCConnection.getDatabaseConnection();
 	}
 
+	public void destroy() {
+		try {
+			connection.close();			
+		} catch (SQLException e) { e.printStackTrace(); } 
+	}
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (request.getSession().getAttribute("user") != null) {
-			request.getSession().setAttribute("searched_item", FoodDao.getFoodByName(connection, request.getParameter("food_name")));
-			response.sendRedirect("d_foods.jsp");
-		} else {
-			System.out.println("In search food servlet");
-		}
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		
+		ArrayList<Foods> foods = FoodDao.getFoods(connection);
+		
+		response.setContentType("text/plain");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(new Gson().toJson(foods));
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -7,6 +7,7 @@ public class User {
 	protected String address;
 	protected long contact_number;
 	protected int user_type;
+	protected String password;
 	
 	public int getUser_id() {
 		return user_id;
@@ -54,6 +55,14 @@ public class User {
 
 	public void setUser_type(int user_type) {
 		this.user_type = user_type;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public User() {

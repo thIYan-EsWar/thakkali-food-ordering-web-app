@@ -2,8 +2,6 @@ package com.thakkali.control;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletConfig;
@@ -19,63 +17,57 @@ import com.thakkali.dao.UserDao;
 import com.thakkali.model.Foods;
 import com.thakkali.model.Orders;
 import com.thakkali.model.User;
+import com.thakkali.utils.JDBCConnection;
 
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Connection connection;
-	private static final String url = "jdbc:mysql://localhost:3306/thakkali";
-	private static final String username = "root";
-	private static final String password = "root";
  
     public LoginServlet() {
         super();
     }
 
 	public void init(ServletConfig config) throws ServletException {
-		try { 
-			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection(url, username, password); 
-		}
-		catch (SQLException | ClassNotFoundException e) { e.printStackTrace(); }
-	}
-
-	public void destroy() {
-		try { connection.close(); }
-		catch (SQLException e) { e.printStackTrace(); }
+		connection = JDBCConnection.getDatabaseConnection();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		String email_id = request.getParameter("email_id");
 		String password = request.getParameter("password");
 		
+		
 		String result = UserDao.loginUser(connection, email_id, password);
 		User user = UserDao.getUser(connection, email_id);
 		HttpSession session = request.getSession();
+		int totalFoods = FoodDao.getTotalFoods(connection);
+		
+		session.setAttribute("user", user);
+		ArrayList<Foods> foods = FoodDao.getFoods(connection);
+		session.setAttribute("foods", foods);
+		session.setAttribute("total_foods", totalFoods);
 		
 		if (result.equals("1")) {
-			ArrayList<Foods> foods = FoodDao.getFoods(connection);
-			session.setAttribute("user", user);
-			session.setAttribute("foods", foods);
-			
-			ArrayList<Orders> history = OrderDao.getOrderHistory(connection, user.getUser_id());
-			
-			for (int i = 0; i < history.size(); i++) 
-				FoodDao.getFoodForHistory(connection, history.get(i));
-			
-			session.setAttribute("history", history);
+			session.setAttribute("success", "");
 			response.sendRedirect("home.jsp");
-			
-		} else if (result.equals("2")) {
-			ArrayList<Foods> foods = FoodDao.getFoodsForManagers(connection, user.getUser_id());
-			session.setAttribute("user", user);
-			session.setAttribute("menu", foods);
-			
+		}
+		
+		else if (result.equals("2")) {
+			ArrayList<Foods> menu = FoodDao.getFoodsForManagers(connection, user.getUser_id());
+			session.setAttribute("menu", menu);	
+			session.setAttribute("success", "");
 			response.sendRedirect("home.jsp");
 			
 		} else {
+			session.removeAttribute("user");
+			session.removeAttribute("foods");
+			session.removeAttribute("total_foods");
+			session.removeAttribute("history");
+			session.removeAttribute("menu");
 			session.setAttribute("error", result);
-			response.sendRedirect("login.jsp");
+			
+			response.sendRedirect("home.jsp");
 		}
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

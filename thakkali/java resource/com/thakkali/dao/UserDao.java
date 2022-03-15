@@ -14,8 +14,8 @@ public class UserDao {
 	private final static String create_user_query = 
 			"insert into "
 			+ "user_table (user_name, email_id, address,"
-			+ "contact_number, user_type)"
-			+ "values (?, ?, ?, ?, ?);";
+			+ "contact_number, user_type, password)"
+			+ "values (?, ?, ?, ?, ?, ?);";
 	//Create Customer
 	private final static String create_customer_query = 
 			"insert into "
@@ -24,23 +24,18 @@ public class UserDao {
 	//Create Manager
 	private final static String create_manager_query = 
 			"insert into "
-			+ "manager_table(manager_id, password, hotel_name, hotel_address) "
-			+ "values (?, ?, ?, ?);";
+			+ "hotel_table(manager_id, hotel_name, hotel_address) "
+			+ "values (?, ?, ?);";
 	//Get User type
 	private final static String get_user_type_query = 
 			"select user_id, user_type "
 			+ "from user_table "
 			+ "where email_id = ?";
-	//Get Customer password
-	private final static String get_customer_password_query = 
+	//Get User password
+	private final static String get_user_password_query =
 			"select password "
-			+ "from customer_table "
-			+ "where customer_id = ?";
-	//Get Manager password
-	private final static String get_manager_password_query = 
-			"select password "
-			+ "from manager_table "
-			+ "where manager_id = ?";
+			+ "from user_table "
+			+ "where user_id = ?";
 	//Get User
 	private final static String get_user_query =
 			"select * "
@@ -109,6 +104,7 @@ public class UserDao {
 			create_user.setString(3, user.getAddress());
 			create_user.setLong(4, user.getContact_number());
 			create_user.setInt(5, user.getUser_type());
+			create_user.setString(6, user.getPassword());
 			
 			create_user.executeUpdate();
 			
@@ -121,9 +117,8 @@ public class UserDao {
 			PreparedStatement create_manager = connection.prepareStatement(create_manager_query);
 			
 			create_manager.setInt(1, user.getUser_id());
-			create_manager.setString(2, user.getPassword());
-			create_manager.setString(3, user.getHotel_name());
-			create_manager.setString(4, user.getHotel_address());
+			create_manager.setString(2, user.getHotel_name());
+			create_manager.setString(3, user.getHotel_address());
 			
 			create_manager.executeUpdate();
 		
@@ -140,14 +135,8 @@ public class UserDao {
 			if (result.next()) {
 				int user_id = result.getInt("user_id");
 				int user_type = result.getInt("user_type");
-				String sql;
 				
-				if (user_type == 1) 
-					sql = get_customer_password_query; 
-
-				else sql = get_manager_password_query;
-				
-				PreparedStatement user_login = connection.prepareStatement(sql);
+				PreparedStatement user_login = connection.prepareStatement(get_user_password_query);
 				user_login.setInt(1, user_id);
 				ResultSet user_password = user_login.executeQuery();
 				

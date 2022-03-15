@@ -9,20 +9,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
 import com.thakkali.dao.FoodDao;
-import com.thakkali.model.User;
+import com.thakkali.model.Foods;
 import com.thakkali.utils.JDBCConnection;
+import com.thakkali.utils.JSONResponseTemplate;
 
-public class FoodsDeleteServlet extends HttpServlet {
+public class GetFoodPaginatedServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Connection connection;
-	
-    public FoodsDeleteServlet() {
+
+    public GetFoodPaginatedServlet() {
         super();
     }
-
+    
 	public void init(ServletConfig config) throws ServletException {
 		connection = JDBCConnection.getDatabaseConnection();
 	}
@@ -31,23 +32,25 @@ public class FoodsDeleteServlet extends HttpServlet {
 		try {
 			connection.close();			
 		} catch (SQLException e) { e.printStackTrace(); } 
-		
 	}
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String[] s_food_ids = request.getParameterValues("select_foods");
-		int[] food_ids = new int[s_food_ids.length];
-		HttpSession session = request.getSession();
+		int pageNumber = Integer.parseInt(request.getParameter("page"));
+		int foodsPerPage = Integer.parseInt(request.getParameter("items"));
 		
-		User manager = (User) session.getAttribute("user");
+		int totalFoods = FoodDao.getTotalFoods(connection);
 		
-		for (int i = 0; i < food_ids.length; i++) {
-			food_ids[i] = Integer.parseInt(s_food_ids[i]);
-		}
+		JSONResponseTemplate<Foods> apiResponse = new JSONResponseTemplate<> ();
+		apiResponse.setCurrent_page(pageNumber);
+		apiResponse.setItems_per_page(foodsPerPage);
+		apiResponse.setStart(pageNumber + foodsPerPage);
+		apiResponse.setTotal_items(totalFoods);
 		
-		FoodDao.deleteFoods(connection, food_ids, manager.getUser_id());
-		session.setAttribute("menu", FoodDao.getFoodsForManagers(connection, manager.getUser_id()));
-		response.sendRedirect("d_admin.jsp");
+		apiResponse.setData(FoodDao.getFoodsPagination(connection, pageNumber, foodsPerPage));
+		
+		response.setContentType("text/plain");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(new Gson().toJson(apiResponse));
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
