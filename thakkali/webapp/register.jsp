@@ -8,102 +8,104 @@
 <meta charset="ISO-8859-1">
 
 <link rel="stylesheet" type="text/css" href="CSS/global.css">
+<script type="text/javascript" src="./javascript/app.js" defer></script>
 
 <title>Register</title>
 </head>
 <body>
 
-	<section class="search-food">
-		<div class="food-container">
-			<form action="register">
-				
-				<table>
-					<tbody>
-						<!-- Name -->
-						<tr>
-							<th>
-							<label for="name">Name:</label>
-							</th>
-							<td>
-								<input type="text" name="name" id="name">
-							</td>
-						</tr>
-
-						<!-- Email -->
-						<tr>
-							<th>
-							<label for="email_id">Email:</label>
-							</th>
-							<td>
-								<input type="email" name="email_id" id="email_id">
-							</td>
-						</tr>
-
-						<!-- Address -->
-						<tr>
-							<th>
-							<label for="address">Address:</label>
-							</th>
-							<td>
-								<input type="text" name="address" id="address">
-							</td>
-						</tr>
-
-						<!-- Contact number -->
-						<tr>
-							<th>
-							<label for="contact_number">Contact number:</label>
-							</th>
-							<td>
-								<input type="text" name="contact_number" id="contact_number">
-							</td>
-						</tr>
-
-						<!-- User type -->
-						<tr>
-							<th>
-							<label for="user_type">User type:</label>
-							</th>
-							<td>
-								<select name="user_type" id="user_type">
-									<option value="1">
-										Customer
-									</option>
-									<option value="2">
-										Manager
-									</option>
-								</select>
-							</td>
-						</tr>
-
-						<!-- Password -->
-						<tr>
-							<th>
-							<label for="password">Password:</label>
-							</th>
-							<td>
-								<input type="password" name="password" id="password">
-							</td>
-						</tr>
-
-						<tr>
-							<td colspan="2">
-								<input type="submit" value="register">
-							</td>	
-						</tr>
-					</tbody>
-				</table>
-
-			</form>
-		</div>
-	</section>
+	<div style="min-height: 70vh;">
+		<section class="search-food">
+			<div class="food-container">
+				<form action="register" id="myForm">
+					
+					<table>
+						<tbody>
+							<!-- Name -->
+							<tr>
+								<th>
+								<label for="name">Name:</label>
+								</th>
+								<td>
+									<input type="text" name="name" id="name" onkeyup="canSubmitForm('myForm', 'form-btn')">
+								</td>
+							</tr>
+	
+							<!-- Email -->
+							<tr>
+								<th>
+								<label for="email_id">Email:</label>
+								</th>
+								<td>
+									<input type="email" name="email_id" id="email_id" onkeyup="canSubmitForm('myForm', 'form-btn')">
+								</td>
+							</tr>
+	
+							<!-- Address -->
+							<tr>
+								<th>
+								<label for="address">Address:</label>
+								</th>
+								<td>
+									<input type="text" name="address" id="address" onkeyup="canSubmitForm('myForm', 'form-btn')">
+								</td>
+							</tr>
+	
+							<!-- Contact number -->
+							<tr>
+								<th>
+								<label for="contact_number">Contact number:</label>
+								</th>
+								<td>
+									<input type="text" name="contact_number" id="contact_number" onkeyup="canSubmitForm('myForm', 'form-btn')">
+								</td>
+							</tr>
+	
+							<!-- User type -->
+							<tr>
+								<th>
+								<label for="user_type">User type:</label>
+								</th>
+								<td>
+									<select name="user_type" id="user_type" onkeyup="canSubmitForm('myForm', 'form-btn')">
+										<option value="1">
+											Customer
+										</option>
+										<option value="2">
+											Manager
+										</option>
+									</select>
+								</td>
+							</tr>
+	
+							<!-- Password -->
+							<tr>
+								<th>
+								<label for="password">Password:</label>
+								</th>
+								<td>
+									<input type="password" name="password" id="password" onkeyup="canSubmitForm('myForm', 'form-btn')">
+								</td>
+							</tr>
+	
+							<tr>
+								<td colspan="2">
+									<input type="submit" value="register" disabled="disabled" id="form-btn">
+								</td>	
+							</tr>
+						</tbody>
+					</table>
+	
+				</form>
+			</div>
+		</section>
+		
+	</div>
 	
 	<br>
-
+	<section class="container-fluid bg-dark flex flex-column justify-content-center align-items-center" style="color: white;">
+		<%@ include file="bye_page.jsp" %>
+	</section>
 </body>
 
-<footer class="text-center">
-	<%@ include file="contact_us.jsp" %>
-	<%@ include file="footer.jsp" %>
-</footer>
 </html>

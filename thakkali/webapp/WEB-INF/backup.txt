@@ -1,0 +1,1288 @@
+    <section class="container">
+    <div class="logo">
+        <ul>
+            <li><img src="Images/logo.png" alt="logo"></li>
+            <div class="text-right nav-bar-style" style="margin-bottom: 0;">
+            	<li><a href="home.jsp" title="Home" class="list-content-style">Home</a></li>
+                
+                <%
+                if (session.getAttribute("user") == null) {
+                    out.println("<li><a href='login.jsp' title='Login/Register' class='list-content-style'>Foods</a></li>");
+                } else {
+                    User user = (User) session.getAttribute("user");
+                    if (user.getUser_type() == 2)
+                    	out.println("<li><a href='d_admin.jsp' title='Admin' class='list-content-style'>Admin</a></li>");
+                    
+                    out.println("<li><a href='d_foods.jsp' title='Foods' class='list-content-style'>Foods</a></li>");
+                    out.println("<li><a href='history.jsp' title='Order History' class='list-content-style'>Order History</a></li>");
+                }
+                
+                %>
+                
+                <li><a href="about_us.jsp" title="About Us" class='list-content-style'>About Us</a></li>
+                <li><a href="#contacts" title="Contact Us" class='list-content-style'>Contact Us</a></li>
+                
+                <%
+                    if (session.getAttribute("user") == null) {
+                        out.println("<li><a href='login.jsp' title='Login/Register' class='list-content-style'>Login/Register</a></li>");
+                    } else {
+                        out.println("<li><a href='logout.jsp' title='Logout' class='list-content-style'>Logout</a></li>");
+                    }
+                
+                    response.setHeader("Cache-Control", "no-cache, no-store, must-revaildate");
+                    response.setHeader("Pragma", "no-chache");
+                    response.setHeader("Expires", "0");
+     
+                %>
+            </div>    
+        </ul>
+    </div>
+    
+    <p class="float-fix"></p>
+</section>
+
+	<div style="min-height: 70vh">
+	<section class="search-food">
+		<div class="admin-container">
+			<form action="add_food" method="post">
+				<table>
+					<thead>
+						<tr>
+							<th><label for="food_name">Food name</label></th>
+							<th><label for="food_category">Category</label></th>
+							<th><label for="food_description">Description</label></th>
+							<th><label for="unit_price">Price</label></th>
+							<th><label for="availability">Availability</label></th>
+							<th><label for="image_url">URL</label></th>
+							<th><label for="image_alt">Image Name</label></th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td><input type="text" name="food_name" id="food_name"></td>
+							<td>
+								<select name="food_category" id="food_category">
+									<option value="Tamilian">Tamilian</option>
+									<option value="Japanese">Japanese</option>
+									<option value="Indian">Indian</option>
+									<option value="Italian">Italian</option>
+									<option value="other">Other</option>
+								</select>
+							</td>
+							<td><input type="text" name="food_description" id="food_description"></td>
+							<td><input type="number" name="unit_price" id="unit_price" min="0"></td>
+							<td><input type="number" name="availability" id="availability" min="0"></td>
+							<td><input type="text" name="image_url" id="image_url"></td>
+							<td><input type="text" name="image_alt" id="image_alt"></td>
+						</tr>
+						<tr>
+							<td colspan="6">
+								<input type="submit" value="add">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+			</form>
+		</div>
+	</section>
+
+	<div style="display:flex; align-items:center; justify-content:center;">
+		<section class="delete-food">
+			<div>
+				<form action="delete_food" method="post">
+					<table>
+						<thead>
+							<tr>
+								<th>Select</th>
+								<th>Name</th>
+							</tr>
+						</thead>
+	
+						<tbody>
+							<%	
+								if (session.getAttribute("menu") != null) {
+									ArrayList<Foods> foods = (ArrayList<Foods>) session.getAttribute("menu");
+							
+									for (Foods food: foods) {
+										out.println(
+											"<tr> " +
+											"<td> " +
+											"<input id='select_food' type='checkbox' name='select_foods' value='" + food.getFood_id() + "'> " +
+											"</td>" +
+											"<td> " +
+											food.getFood_name() +
+											"</td> " +
+											"</tr>"	
+										);	
+									}	
+								}
+						
+							%>
+						</tbody>
+	
+						<tfoot>
+							<tr>
+								<td colspan="2">
+									<input type="submit" id="delete">
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</form>
+			</div>
+		</section>
+		
+		<section class="delete-food">
+			
+			<form action="increase_food" method="post">
+				<table>
+					<thead>
+						<tr>
+							<th>Select</th>
+							<th>Name</th>
+							<th>Current</th>
+							<th>Increase</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+							<%
+								if (session.getAttribute("menu") != null) {
+									ArrayList<Foods> foods = (ArrayList<Foods>) session.getAttribute("menu");
+									for (Foods food: foods) {
+										out.println(
+												"<tr> " +
+												"<td> <input type='checkbox' name='values' value='" + food.getFood_id() + "," + food.getAvailability() + "'>"+
+												"</td>" +		
+												"<td> " + food.getFood_name() + "</td>" + 
+												"<td>"+ food.getAvailability() + " </td>" +
+												"<td> <input type='number' name='" + food.getFood_id() + "' min='0' max='" + (99 - food.getAvailability()) + "'></td>" +
+												"</tr>"
+												);
+									}
+									
+								}
+								
+							%>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<input type="submit" id="increase">
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+			
+		</section>
+	</div>
+	
+	
+</div>
+
+
+	<!-- 
+	
+	<div id="register" class="zero_visibility">
+		<div class="form_container form_container--fat form_container--tall d-flex flex-column align-items-end p-3" id="form_container">	
+			<div>
+				<button type="button" class="btn-close" aria-label="Close" id="close_btn"></button>
+			</div>	
+		</div>
+		<div class="registration_form d-flex flex-column" style="color: black;" id="registration_form">
+			<form action="register" id="registration_form">
+			  <div class="mb-3">
+			    <label for="exampleInputName" class="form-label">Full Name</label>
+			    <input type="text" class="form-control" id="exampleInputName" aria-describedby="emailHelp" name="name" onkeyup="canSubmitForm()">
+			    <div id="nameHelp" class="form-text">Please enter your full name with a space a between every word.</div>
+			  </div>
+			  
+			  <div class="mb-3">
+			    <label for="exampleInputEmail1" class="form-label">Email address</label>
+			    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email_id" onkeyup="canSubmitForm()">
+			    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+			  </div>
+			  
+  			  <div class="mb-3">
+			    <label for="exampleInputAddress" class="form-label">Residential Address</label>
+			    <input type="text" class="form-control" id="exampleInputAddress" aria-describedby="emailHelp" name="address" onkeyup="canSubmitForm()">
+			    <div id="addressHelp" class="form-text">Please enter your full residential address.</div>
+			  </div>
+			  
+  			  <div class="mb-3">
+			    <label for="exampleInputNumber" class="form-label">Contact Number</label>
+			    <input type="text" class="form-control" id="exampleInputNumber" aria-describedby="emailHelp" name="contact_number" onkeyup="canSubmitForm()">
+			    <div id="contactHelp" class="form-text">Please enter your contact number with your respective country code.</div>
+			  </div>			  
+
+  			  <div class="mb-3">
+			    <label for="exampleInputUserType" class="form-label">Subscription Type</label>
+			    <select type="text" class="form-select" id="exampleInputUserType" aria-describedby="emailHelp" name="user_type" onkeyup="canSubmitForm()">
+			    	<option value="1">Customer</option>
+			    	<option value="2">Manager</option>
+			    </select>
+			  </div>
+			  
+			  <div class="mb-3">
+			    <label for="exampleInputPassword1" class="form-label">Password</label>
+			    <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+			  </div>
+			  
+			  <button type="submit" class="btn btn-primary" disabled="disabled">Register</button>
+			</form>
+		</div>	
+	</div>
+	
+	 -->
+	 
+	 
+	 /*
+      const FOODS_PER_PAGE = 8;
+  `
+      let foodList, start, end;
+  
+      let prevButton = document.getElementById("prev-btn");
+      let nextButton = document.getElementById("next-btn");
+      
+if (foodList === undefined) {
+	prevButton.setAttribute("disabled", "");
+	nextButton.setAttribute("disabled", "");
+      } 
+      
+const xhr = new XMLHttpRequest();
+      
+xhr.open("GET", "http://localhost:8080/thakkali/get_food", true);
+
+xhr.onload = function (event) {
+	
+	if (this.status == 200 || this.status == 304) {
+		foodList = JSON.parse(this.responseText);
+		totalFoods = foodList.length;
+		
+		start = pageNumber;
+           end = (start + FOODS_PER_PAGE) <= totalFoods? (start + FOODS_PER_PAGE): totalFoods;
+		
+		document.getElementById("next-btn").removeAttribute("disabled");
+		const foodContainer = document.getElementById("food-list-container");
+		
+		document.getElementById("display-box").setAttribute("placeholder", "page# " + pageNumber + " | foods " + start + "-" + end);
+
+		let output = "";
+		
+                 for (let i = 0; i < foodList.length; i++) {
+                     if (i >= pageNumber * FOODS_PER_PAGE) {
+                         break;
+                     }
+                     
+						output +=
+							'<div class="col"> <div class="card p-2 d-flex" style="width: 18rem;">' +
+							'<img src=' + foodList[i].image_url + 'class="card-img-top" alt=' + foodList[i].image_alt + '> ' +
+							'<div class="card-body"> ' +
+							    '<h5 class="card-title fs-4">' + foodList[i].food_name + '</h5> ' +
+							    '<p class="card-text"> ' +
+							    '<p style="margin-bottom: 0;">' + foodList[i].food_category + '</p> <br>' +
+							    '<p style="margin-bottom: 0;">' + foodList[i].description + '</p> <br >' +
+							    '<p style="margin-bottom: 0;"> INR ' + foodList[i].price + '</p> ' +
+							    '</p> ' +
+							    '<a href="#" class="btn btn-primary">Select</a> ' +
+							'</div>' +
+							'</div> </div>';
+                 }		
+
+		foodContainer.innerHTML = output;
+	}
+};
+
+xhr.send();
+      
+      nextButton.addEventListener("click", (event) => {
+      	event.preventDefault();
+      	
+      	if (pageNumber == 1) prevButton.setAttribute("disabled", "");
+          
+          start = pageNumber * FOODS_PER_PAGE;
+          pageNumber++;
+          let output = "";
+
+          if (prevButton.getAttribute("disabled") == "") prevButton.removeAttribute("disabled");
+
+          document.getElementById("display-box").setAttribute("placeholder", "page# " + pageNumber + " | foods " + start + "-" + end);
+
+          for (let i = 0; start < end; i++, start++) {
+                 
+			output +=
+				'<div class="col"> <div class="card p-2 d-flex" style="width: 18rem;">' +
+				'<img src=' + foodList[i].image_url + 'class="card-img-top" alt=' + foodList[i].image_alt + '> ' +
+				'<div class="card-body"> ' +
+				    '<h5 class="card-title fs-4">' + foodList[i].food_name + '</h5> ' +
+				    '<p class="card-text"> ' +
+				    '<p style="margin-bottom: 0;">' + foodList[i].food_category + '</p> <br>' +
+				    '<p style="margin-bottom: 0;">' + foodList[i].description + '</p> <br >' +
+				    '<p style="margin-bottom: 0;"> INR ' + foodList[i].price + '</p> ' +
+				    '</p> ' +
+				    '<a href="#" class="btn btn-primary">Select</a> ' +
+				'</div>' +
+				'</div> </div>';
+          }
+
+          document.getElementById("food-list-container").innerHTML = output;
+
+          if (end == totalFoods) nextButton.setAttribute("disabled", "");
+      });
+      
+      prevButton.addEventListener("click", (event) => {
+      	event.preventDefault();
+      
+          if (pageNumber - 1 == 1) prevButton.setAttribute("disabled", "");
+
+          pageNumber--;
+          start = pageNumber * FOODS_PER_PAGE;
+          let output = "";
+
+          document.getElementById("display-box").setAttribute("placeholder", "page# " + pageNumber + " | foods " + start + "-" + end);
+          
+          for (let i = 0; start - 1 < end && start > 0; i++, start--) {
+                 
+			output +=
+				'<div class="col"> <div class="card p-2 d-flex" style="width: 18rem;">' +
+				'<img src=' + foodList[i].image_url + 'class="card-img-top" alt=' + foodList[i].image_alt + '> ' +
+				'<div class="card-body"> ' +
+				    '<h5 class="card-title fs-4">' + foodList[i].food_name + '</h5> ' +
+				    '<p class="card-text"> ' +
+				    '<p style="margin-bottom: 0;">' + foodList[i].food_category + '</p> <br>' +
+				    '<p style="margin-bottom: 0;">' + foodList[i].description + '</p> <br >' +
+				    '<p style="margin-bottom: 0;"> INR ' + foodList[i].price + '</p> ' +
+				    '</p> ' +
+				    '<a href="#" class="btn btn-primary">Select</a> ' +
+				'</div>' +
+				'</div> </div>';
+          }
+
+          document.getElementById("food-list-container").innerHTML = output;
+
+          if (nextButton.getAttribute("disabled") == "") nextButton.removeAttribute("disabled");
+      });
+      
+      */
+      
+      
+<section class="vh-100">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid"
+          alt="Sample image">
+      </div>
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <form>
+          <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+            <p class="lead fw-normal mb-0 me-3">Sign in with</p>
+            <button type="button" class="btn btn-primary btn-floating mx-1">
+              <i class="fab fa-facebook-f"></i>
+            </button>
+
+            <button type="button" class="btn btn-primary btn-floating mx-1">
+              <i class="fab fa-twitter"></i>
+            </button>
+
+            <button type="button" class="btn btn-primary btn-floating mx-1">
+              <i class="fab fa-linkedin-in"></i>
+            </button>
+          </div>
+
+          <div class="divider d-flex align-items-center my-4">
+            <p class="text-center fw-bold mx-3 mb-0">Or</p>
+          </div>
+
+          <!-- Email input -->
+          <div class="form-outline mb-4">
+            <input type="email" id="form3Example3" class="form-control form-control-lg"
+              placeholder="Enter a valid email address" />
+            <label class="form-label" for="form3Example3">Email address</label>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-3">
+            <input type="password" id="form3Example4" class="form-control form-control-lg"
+              placeholder="Enter password" />
+            <label class="form-label" for="form3Example4">Password</label>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Checkbox -->
+            <div class="form-check mb-0">
+              <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
+              <label class="form-check-label" for="form2Example3">
+                Remember me
+              </label>
+            </div>
+            <a href="#!" class="text-body">Forgot password?</a>
+          </div>
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <button type="button" class="btn btn-primary btn-lg"
+              style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!"
+                class="link-danger">Register</a></p>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+    <!-- Copyright -->
+    <div class="text-white mb-3 mb-md-0">
+      Copyright © 2020. All rights reserved.
+    </div>
+    <!-- Copyright -->
+
+    <!-- Right -->
+    <div>
+      <a href="#!" class="text-white me-4">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="#!" class="text-white me-4">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="#!" class="text-white me-4">
+        <i class="fab fa-google"></i>
+      </a>
+      <a href="#!" class="text-white">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </div>
+    <!-- Right -->
+  </div>
+</section>
+
+
+<!-- 
+<div class="login_form d-flex flex-column" style="color: black;" id="login_form">
+	<form action="login" method="post" id="login_form">
+	  <div class="mb-3">
+	    <label for="exampleInputEmail1" class="form-label">Email address</label>
+	    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email_id"">
+	    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+	  </div>
+	  <div class="mb-3">
+	    <label for="exampleInputPassword1" class="form-label">Password</label>
+	    <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+	  </div>
+		
+	  <button type="submit" class="btn btn-primary" id="login-btn">Submit</button>
+	  
+	  <div class="mt-3 mb-3 form-check">
+	  	<a class="fs-6 fwt-lighter" href="register.jsp" id="register_form_dispatcher" style="color: black;">New User? Register</a>
+	  </div>			 
+		</form>
+	</div>
+</div>	
+ -->
+ 
+ <!-- 
+<section class="login_form zindex-offcanvas m-0 d-flex flex-column justify-content-between" id="login_form_section">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100 mt-0">
+      
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid"
+          alt="Sample image">
+      </div>
+      
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <form action="login" method="post" id="login_form">
+
+          <div class="divider d-flex align-items-center my-4 zero_visibility">
+            <p class="text-center fw-bold mx-3 mb-0">Or</p>
+          </div>
+
+          <!-- Email input -->
+          <div class="form-outline mb-4">
+            <input type="email" id="form3Example3" class="form-control form-control-lg"
+              placeholder="Enter a valid email address" name="email_id" />
+            <label class="form-label" for="form3Example3">Email address</label>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-3">
+            <input type="password" id="form3Example4" class="form-control form-control-lg"
+              placeholder="Enter password" name="password" />
+            <label class="form-label" for="form3Example4">Password</label>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Checkbox -->
+            <div class="form-check mb-0">
+              <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
+              <label class="form-check-label" for="form2Example3">
+                Remember me
+              </label>
+            </div>
+            <a href="#!" class="text-body">Forgot password?</a>
+          </div>
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <button type="submit" class="btn btn-dark btn-lg"
+              style="padding-left: 2.5rem; padding-right: 2.5rem;" id="login-btn">Login</button>
+            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="http://www.thiyan-projects.com/thakkali/register_async.jsp"
+                class="link-danger" id="registration_form_route">Register</a></p>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="align-baseline d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-dark mt-5">
+    <div class="text-white mb-md-0">
+      Copyright © 2020. All rights reserved.
+    </div>
+  </div>
+</section>
+
+-->
+
+<%
+	if (session.getAttribute("menu") != null); {
+		ArrayList<Foods> foods = (ArrayList<Foods>) session.getAttribute("menu");
+    		
+    	for (Foods food: foods) {
+    		if ((99 - food.getAvailability()) > 0) {
+    			out.print(
+    					"<div class='col-auto form-check'> \n" +
+	    				"<input class='form-check-input' onclick='selectFood(" + food.getFood_id() + ")' name='values' type='checkbox' id='" + food.getFood_id() + "' value='" + food.getFood_id() + "," + food.getAvailability() + "'> \n" +
+	    				"<label class='form-check-label' for='autoSizingCheck'> \n" +
+	    				"</label> </div> \n"
+    					);
+    		}
+	    	
+			else 
+				out.print(
+						"<div class='col-auto form-check'>\n " +
+	    				"<input class='form-check-input' disabled name='values' type='checkbox' id='values' value='" + food.getFood_id() + "," + food.getAvailability() + "'> \n" +
+	    				"<label class='form-check-label' for='autoSizingCheck'> \n" +
+	    				"</label> </div> \n"
+						);
+    		
+    		out.print(		
+    				"<div class='col-auto'> \n" +
+    				"<label class='visually-hidden' for='" + food.getFood_id() + ".name'>Food name</label> \n" +
+    				"<input type='text' class='form-control' disabled='disabled' id='" + food.getFood_id() + ".name' placeholder='" + food.getFood_name() + "'> \n" +
+    				"</div> \n" +
+    						
+    				"<div class='col-auto'> \n" +
+    				"<label class='visually-hidden' for='" + food.getFood_id() + ".quantity'>Quantity</label> \n" +
+    				"<input type='text' class='form-control' disabled='disabled' id='" + food.getFood_id() + ".quantity' placeholder='" + food.getAvailability() + "'> \n" +
+    				"</div> \n" +
+
+    				"<div class='col-auto'> \n" +
+    				"<label class='visually-hidden' for='" + food.getFood_id() + ".display'>Extra</label> \n" +
+    				"<input type='text' class='form-control' disabled='disabled' id='" + food.getFood_id() + ".display' placeholder='+ 0'> \n" +
+    				"</div> \n" +
+    				
+					"<input type='range' disabled='disabled' class='form-range ms-5' style='width: 30%' min='0' max='" + (100 - food.getAvailability()) + "' steps='1' name='" + food.getFood_id() + "' id= '" + food.getFood_id() + ".slider'> \n" +
+					"<output for='" + food.getFood_id() + "' onforminput='value=foo.valueAsNumber;'></output> \n" +
+							
+					"<div></div> \n"
+    				);
+    	}
+	}
+%>
+
+<%
+	if (session.getAttribute("menu") != null); {
+		ArrayList<Foods> foods = (ArrayList<Foods>) session.getAttribute("menu");
+    		
+    	for (Foods food: foods) {
+    		out.print(
+    				"<div class='col-auto form-check'> " +
+    				"<input class='form-check-input' type='checkbox' name='select_foods' id='select_foods' value='" + food.getFood_id() + "'> " +
+    				"<label class='form-check-label' for='autoSizingCheck'> " +
+    				"</label> </div>" +
+    						
+    				"<div class='col-auto'> " +
+    				"<label class='visually-hidden' for='autoSizingInput'>Food name</label> " +
+    				"<input type='text' class='form-control' disabled='disabled' id='autoSizingInput' placeholder='" + food.getFood_name() + "'> " +
+    				"</div> " +
+    						
+    				"<div class='col-auto'> " +
+    				"<label class='visually-hidden' for='autoSizingInput'>Quantity</label> " +
+    				"<input type='text' class='form-control' disabled='disabled' id='autoSizingInput' placeholder='" + food.getAvailability() + "'> " +
+    				"</div> " +
+    						
+    				"<div></div>"
+    				);
+    	}
+	}
+%>
+
+for (let i = 0; i < foodList.data.length; i++) {
+	output +=
+		
+		"<div class='col col-lg-2'> <div class='card p-2 d-flex' style='width: 18rem;'>" +
+		"<img src='" + foodList.data[i].image_url + "'class='card-img-top' alt='" + foodList.data[i].image_alt + "' height=225px width=225px> " +
+		"<div class='card-body'> " +
+		    "<h5 class='card-title fs-4'>" + foodList.data[i].food_name + "</h5> " +
+		    "<p class='card-text'> " +
+		    "<p style='margin-bottom: 0;'>" + foodList.data[i].food_category + "</p> <br> " +
+		    "<p style='margin-bottom: 0;'>" + foodList.data[i].description + "</p> <br > " +
+		    "<p style='margin-bottom: 0;'> INR " + foodList.data[i].price + "</p> " +
+		    "</p> " +
+		    "<a class='btn btn-primary' id='cart-button'>Select</a> " +
+		"</div>" +
+		"</div> </div>";
+}
+
+n = foodList.total_items;
+	
+	
+foodContainer.innerHTML = output;
+
+"<ul class='list-group list-group-flush'> " +
+    "<li class='list-group-item'>" + foodList.data[i + j].food_category + "</li> " +
+    "<li class='list-group-item'>" + foodList.data[i + j].price +"</li> " +
+    "<li class='list-group-item'>" + foodList.data[i + j].availability + "</li> " +
+  "</ul> " +
+
+
+"<li class='list-group-item' id='selected-food'> " +
+"<div class='row g-3'> " +
+  "<div class='col-sm-7'> " +
+    "<p class='form-control' id='selected-food-name'>Food Name</p> " +
+  "</div> " +
+  
+  "<div class='col-sm-2'> " +
+  	"<input type='text' class='form-control text-right' disabled placeholder='1' id='selected-food-price' onchange='changeSelectedFoodCount()'> " +  
+  "</div> " +
+  
+  "<div class='col-sm-3'> " +
+  	"<input type='number' class='form-control text-right' placeholder='1' id='selected-food-count' > " +  
+  "</div> " +
+"</div> </li> "
+
+
+//				Part imagePart = request.getPart("admin_image_upload");
+//				uploadPath = imagePart.getSubmittedFileName();
+//				FileOutputStream fileOutputStream = new FileOutputStream(uploadPath);
+//				InputStream inputStream = imagePart.getInputStream();
+//
+//				byte[] imageData = new byte[inputStream.available()];
+//				inputStream.read(imageData);
+//				
+//				fileOutputStream.write(imageData);
+//				fileOutputStream.flush();
+//				fileOutputStream.close();
+
+	<!-- 
+	<section style="color: white; background-image: linear-gradient(225deg, rgb(231, 231, 231), transparent); background-size: cover;">
+		<div class="container-sm">
+			<table class="history_table table table-striped table-hover">
+				<thead>
+					<tr class="text-center">
+						<th scope="col">Serial number</th>
+						<th scope="col">Name</th>
+						<th scope="col">Quantity</th>
+						<th scope="col">Price</th>
+						<th scope="col">Date</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<%
+						ArrayList<Orders> history = (ArrayList<Orders>) session.getAttribute("history");
+						
+						if (history != null) {
+							for (int i = 0; i < history.size(); i++) {
+								out.println(
+										"<tr>" +
+											"<td scope='row' class='text-center'>" + (i + 1) + "</td>" +
+											"<td class='text-center'>" + history.get(i).getFood_name() + "</td>" +
+											"<td class='text-center'>" + history.get(i).getQuantity() + "</td>" + 
+											"<td class='text-center'>" + history.get(i).getPrice() + "</td>" +
+											"<td class='text-center'> " + history.get(i).getOrdered_date() + "</td>" +
+										"</tr>" 
+										);	
+							}
+						}
+					%>
+				</tbody>	
+			</table>
+			
+		</div>
+	</section>
+</div>
+
+<br>
+
+
+ -->
+ 
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+  Launch demo modal
+</button>
+
+
+<div class='row row-main'>
+    <div class='col-3'> <img class='img-fluid' src='https://i.imgur.com/qSnCFIS.png'> </div>
+    <div class='col-6'>
+        <div class='row d-flex'>
+            <p><b>iPhone XR</b></p>
+        </div>
+        <div class='row d-flex'>
+            <p class='text-muted'>128GB White</p>
+        </div>
+    </div>
+    <div class='col-3 d-flex justify-content-end'>
+        <p><b>$599</b></p>
+    </div>
+</div>
+
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
+
+<%@ page import="java.util.ArrayList, com.thakkali.model.Foods" %>
+
+<%@ include file="header.jsp" %>
+
+	<!DOCTYPE html>
+	<html>
+
+	<head>
+		<meta charset="ISO-8859-1">
+		
+		<style>
+			.BoxContainer {
+				min-height: 70vh;
+				position: relative;
+			}
+			
+			.btn:hover {
+				transform: scale(1.02);
+				transition: all 200ms ease-in-out;
+			}
+			
+			.black_text {
+				color: black;
+			}
+			
+			.card {
+				min-height: 512px;
+			}
+			
+			
+			.card a {
+				color: black;
+				text-decoration: none;
+			}
+
+			
+			#food-list-container .card:hover {
+				color: white;
+				background-color: black;
+				transform: scale(1.02);
+				transition: all 200ms ease-in-out; 
+			}
+			
+			#food-list-container .card:hover ul li {
+				color: white;
+			}
+			
+			.list-group-item {
+				border: none;
+				background-color: transparent;
+			}
+			
+			#food-cart .card {
+				position: sticky;
+				top: 0;
+			}
+			
+			.no-box {
+				border: none;	
+			}
+			
+			.no-bg-color {
+				background-color: none;
+			}
+			
+			.main {
+			    padding: 0 2rem
+			}
+			
+			.main img {
+			    border-radius: 7px
+			}
+			
+			.main p {
+			    margin-bottom: 0;
+			    font-size: 0.75rem
+			}
+			
+			#sub-title p {
+			    margin: 1vh 0 2vh 0;
+			    font-size: 1rem
+			}
+			
+			.row-main {
+			    padding: 1.5vh 0;
+			    align-items: center
+			}
+			
+			hr {
+			    margin: 1rem -1vh;
+			    border-top: 1px solid rgb(214, 214, 214)
+			}
+			
+			.total {
+			    font-size: 1rem
+			}
+			
+			@media(height: 1366px) {
+			    .main p {
+			        margin-bottom: 0;
+			        font-size: 1.2rem
+			    }
+			
+			    .total {
+			        font-size: 1.5rem
+			    }
+			}
+						
+			
+		</style>
+		
+		<title>Foods</title>
+	</head>
+
+	<body>
+
+		<%@ include file="check_login.jsp" %>
+
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLongTitle">Order Placed Successfully</h5>
+		        <button type="button" class="btn-close" onclick="closeConfirmation()"></button>
+		      </div>
+		      <div class="modal-body">	
+		      	
+	      	    <div class="main"> <span id="sub-title"><p><b>Payment Summary</b></p></span>
+	      	    
+	      	    <div id="order_summary_container"></div>
+		        
+		        <hr>
+		        
+		        <div class="total">
+	            <div class="row">
+	                <div class="col"> <b> Total:</b> </div>
+	                <div class="col d-flex justify-content-end"> <b>$847.95</b> </div>
+	            </div>
+				</div>
+	      	    
+			</div>      	
+      	</div>
+      
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-dark" data-dismiss="modal" onclick="closeConfirmation()">Done</button>
+      </div>
+    
+    </div>
+  </div>
+</div>
+		
+		<form method="post">
+			<section class="BoxContainer bg-light d-flex justify-content-center">
+				<div class="container-sm w-50" style="margin-left: 80px; flex: 3;" id="food-list-container"></div>
+				
+				<div class="mt-5" style="flex: 1;" id="food-cart">
+					<div class="card me-5 shadow-lg" style="width: 24rem;">
+					  <img src="Images/cart_empty.jpg" class="card-img-top" alt="Cart Empty">
+					  <div class="card-body">
+					    <h5 class="card-title">Food Cart</h5>
+					  </div>
+					  <form> 
+						  <ul class="list-group list-group-flush" id="cart-list-container"></ul>
+						  <div class="card-body">
+						    <button type="button" class="btn btn-outline-dark" id="place_order_button" onclick="checkOutFoods()">Order</button>
+						  </div>
+					
+						</form>
+					</div>
+				</div>
+			
+			</section>
+			
+			<section class="d-flex justify-content-center align-items-center flex-row bd-highlight mx-3" id="page_number">
+				<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+					<div class="btn-group" role="group" aria-label="First group" id="page_number"></div>
+				</div>
+			</section>
+
+		</form>
+
+		<script type="text/javascript">
+			var cartItemsList = [];
+			var imageURLArray = new Array();
+			
+			if (cartItemsList.length > 0) document.getElementById("place_order_button").removeAttribute("disabled");
+			else document.getElementById("place_order_button").setAttribute("disabled", "disabled");
+
+			function closeConfirmation() {
+				$("#exampleModalCenter").modal("hide");
+			}
+			
+			function checkOutFoods() {
+				
+				let xhrCheckout = new XMLHttpRequest();
+				
+				console.log("Inside checkOutFoods");
+				
+				xhrCheckout.open("GET", "/thakkali/checkout?food_cart=" + encodeURIComponent(JSON.stringify(cartItemsList), true));
+				xhrCheckout.setRequestHeader('Content-type', 'application/json');
+				
+				
+				xhrCheckout.onload = function () {
+					console.log("Inside onload...");
+					
+					const orderSummary = document.getElementById("order_summary_container");
+					let orderSummaryInnerHTML = "";
+					
+					for (let i = 0; i < cartItemsList.length; i++) {
+						orderSummaryInnerHTML +=
+							"<div class='row row-main'> " +
+							"<div class='col-3'> <img class='img-fluid' src='" + imageURLArray[i] + "'> </div> " +
+				            "<div class='col-6'> " +
+				                "<div class='row d-flex'> " +
+				                    "<p><b>" + cartItemsList[i].name + "</b></p> " +
+				                "</div> " +
+				                "<div class='row d-flex'> " +
+				                    "<p class='text-muted'>" + cartItemsList[i].quantity + "</p> " +
+				                "</div> " +
+				            "</div> " +
+				            "<div class='col-3 d-flex justify-content-end'> " +
+				                "<p><b>" + cartItemsList[i].price + "</b></p> " +
+				            "</div> " +
+			        		"</div>";
+					}
+					
+					orderSummary.innerHTML = orderSummaryInnerHTML;
+					
+					
+					if (this.status == 200 || this.status == 304) {
+						console.log("Inside status...");
+						console.log(cartItemsList);
+						
+						$("#exampleModalCenter").modal("show");
+						
+					}
+					
+					
+					//window.location.href = "/thakkali/history.jsp";
+					xhrCheckout.send();
+				
+				}
+			}
+			
+			// Food count updation function body
+			function changeSelectedFoodCount(id, price) {
+				
+				let changeCount = document.getElementById("selected-food-count-" + id);
+				let priceBox = document.getElementById("selected-food-price-" + id);
+				
+				for (let i = 0; i < cartItemsList.length; i++) {
+					if (cartItemsList[i].id == id) cartItemsList[i].quantity = changeCount.value;
+				}
+				priceBox.setAttribute("placeholder", price * changeCount.value);
+				
+			}
+			
+			// Food list redering function body
+			function renderFoodCartList(items) {
+				
+				if (cartItemsList.length > 0) document.getElementById("place_order_button").removeAttribute("disabled");
+				else document.getElementById("place_order_button").setAttribute("disabled", "disabled");
+				
+				let output = "";
+
+				for (let i = 0; i < items.length; i++) {
+					output += 
+						"<li class='list-group-item' id='selected-food'> " +
+				    	"<div class='row g-3'> " +
+						  "<div class='col-sm-6'> " +
+						    "<p class='no-box form-control' id='selected-food-name-" + items[i].id + "'>" + items[i].name + "</p> " +
+						  "</div> " +
+						  
+						  "<div class='col-sm-3'> " +
+						  	"<input type='text' class='no-box no-bg-color form-control text-right' disabled placeholder='" + items[i].price + "' id='selected-food-price-" + items[i].id + "'> " +  
+						  "</div> " +
+						  
+						  "<div class='col-sm-3'> " +
+						  	"<input type='number' class='form-control text-right' placeholder='1' id='selected-food-count-" + 
+						  	items[i].id + "' min='0' max='" + items[i].max_count + "' onchange='changeSelectedFoodCount(" + 						  	
+						  	items[i].id +", "+ items[i].price + ")'> " +
+							  
+						  	"</div> " +
+						    "</div> </li> ";						
+				}
+
+				document.getElementById("cart-list-container").innerHTML = output;
+			}
+		
+			// Add 2 Cart function body
+			function addToCart(id, name, price, maxCount, imageURL) {
+				
+				if (maxCount > 0) {
+					document.getElementById("food-item-" + id).classList.toggle("bg-dark");
+					document.getElementById("food-item-" + id).classList.toggle("text-white");
+					document.getElementById("food-item-title-" + id).classList.toggle("text-white");
+
+					let countBubble = document.getElementById("food-item-count-bubble-" + id);
+					let cartList = document.getElementById("selected-food");
+
+					if (countBubble.innerText == 0) {
+						countBubble.innerText = 'x';
+						
+						countBubble.classList.add("bg-white");
+						countBubble.classList.add("text-dark");
+						
+						cartItemsList.push(
+								{
+									id: id,
+									name: name,
+									price: price,
+									quantity: 1,
+									max_count: maxCount
+								}
+							);
+						
+						imageURLArray.push(imageURL);
+						
+						
+					} else {
+						countBubble.innerText = 0;
+						
+						countBubble.classList.remove("bg-white");
+						countBubble.classList.remove("text-dark");
+						
+						for (let i = 0; i < cartItemsList.length; i++) 
+							if (cartItemsList[i].id == id){ 
+								cartItemsList.splice(i);
+								imageURLArray.splice(i);
+								break;
+							}
+					}
+					renderFoodCartList(cartItemsList);	
+				}
+			}
+		
+			
+			//Main body
+			const XHR = new XMLHttpRequest();
+			doPaginate(0, 0, 9);
+			
+			function doPaginate(i, start, foodsPerPage) {
+				let foodList;
+				
+				previous = i;
+				
+				const foodContainer = document.getElementById("food-list-container");
+				XHR.open("GET", "/thakkali/get_food_page?page=" + i + "&items="+ foodsPerPage, true);
+				
+				XHR.onload = function (event) {
+					if(this.status == 200 || this.status == 304) foodList = JSON.parse(this.responseText);
+					
+					let pageNumberHtml = "";
+					
+					let n = foodList.total_items;
+					let iterator = 0;
+					
+					while (n > 0) {
+						n = Math.floor(n / foodList.items_per_page);
+						pageNumberHtml += 
+							"<button type='button' class='btn btn-outline-dark' id='"+ (iterator + 1) + ".current_page' " +
+							"onclick='doPaginate(" + iterator +", " + (iterator + foodsPerPage) + ", " + 
+									foodsPerPage + ")'>" + (iterator + 1) + "</button>";
+						
+						iterator++;
+						
+					}
+					
+					document.getElementById("page_number").innerHTML = pageNumberHtml;	
+				
+					let output = "";
+					n = foodList.data.length;
+					const COLS = 3;
+					let i = 0;
+					
+					while (n > 0) {
+						let m = Math.min(COLS, n)					
+						output +=
+							  "<div class='row row-cols-3'>\n";
+							  
+						for (let j = 0; j < m; j++) {
+							output +=
+								"<div class='col p-3' > " +
+									"<div class='card card shadow-lg' style='width: 18rem;' id='food-item-" + foodList.data[i + j].food_id + 
+												"' onclick='addToCart(" + foodList.data[i + j].food_id + ", " + JSON.stringify(foodList.data[i + j].food_name) + ", " + 
+												   foodList.data[i + j].price + ", " + foodList.data[i + j].availability + ", " + JSON.stringify(foodList.data[i + j].image_url) + ")'> " +
+													
+									  "<img src='" + foodList.data[i + j].image_url + "' class='card-img-top' alt='" + foodList.data[i + j].image_alt + "' height=286px width=286px> " +
+									  "<div class='card-body'> " +
+									  
+										  "<ul class='list-group'> " + 
+											  "<li class='list-group-item d-flex justify-content-between align-items-center'> " +
+											  		"<h5 class='card-title h5' id='food-item-title-" + foodList.data[i + j].food_id + "'>" + foodList.data[i + j].food_name + "</h5> " +
+												    "<span class='badge bg-dark rounded-pill' id='food-item-count-bubble-" + foodList.data[i + j].food_id + "'>0</span> " +
+											  "</li> " +
+									  	  "</ul> " +
+									  	  
+									    "<p class='card-text'>" + foodList.data[i + j].description + "</p> " +
+									    "<p class='card-text'>INR " + foodList.data[i + j].price + "</p> ";
+									    
+								if (foodList.data[i + j].availability == 0) {
+									output += "<p class='card-text text-danger'>"+ foodList.data[i + j].food_name +" is currently unavailable :(</p> ";
+								} else {
+									output += "<p class='card-text'>Quantity Available: " + foodList.data[i + j].availability + "</p> ";
+								}	    
+									    
+								output += 
+									  "</div> " +
+									"</div> " +
+						    	"</div>";
+						}
+						
+						output += "</div>\n";					
+						
+						n -= COLS;
+						i += COLS;
+					}
+				
+				foodContainer.innerHTML = output;							
+				}
+				
+				XHR.send();
+			}
+			
+			
+			var placeOrderButton = document.getElementById("place_order_button");
+			placeOrderButton.addEventListener("click", (event) => {
+				
+			});
+			
+		</script>
+
+	<section class="mt-2 container-fluid bg-dark flex flex-column justify-content-center align-items-center" style="color: white;">
+		<%@ include file="bye_page.jsp" %>
+	</section>
+
+	</body>
+	</html>
+	
+	
+	 <!--  
+	<script type="text/javascript">
+		let jsonResponse, historiesList, historiesPerPage = 5;
+		let currentPage = 1, numberOfPages = 1;
+		
+		//Initial Page population
+		getOrderHistories(1); 
+		
+		function showDetailedView(orderDetails) {
+			let innerHtml = "";
+			
+			for (let i = 0; i < orderDetails.length; i++) {
+				innerHtml =
+			        "<div class='row row-main'> " +
+		            "<div class='col-3'> <img class='img-fluid' src='" + orderDetails[i].image_url + "'> </div> " +
+		            "<div class='col-6'> " +
+		                "<div class='row d-flex'> " +
+		                    "<p><b>" + orderDetails[i].name + "</b></p> " +
+		                "</div> " +
+		                "<div class='row d-flex'> " +
+		                    "<p class='text-muted'>" + orderDetails[i].ordered_date + "</p> " +
+		                "</div> " +
+		            "</div> " +
+		            "<div class='col-3 d-flex justify-content-end'> " +
+		                "<p><b><i>Rs.</i>" + orderDetails[i].price + "</b></p> " +
+		            "</div> " +
+	        		"</div> ";
+			}
+			
+			document.getElementById("history_detailed_view_container")
+				.innerHTML = innerHtml;
+			
+		}
+		
+		function getOrderHistories(newPage) {
+			if (newPage >= 1 && newPage <= numberOfPages) {
+				newPage = start;
+				
+				const getOrderHistoriesXHR = new XMLHttpRequest();
+				getOrderHistoriesXHR.open("GET", "/thakkali/get_order_history?page=" + newPage, true);
+				
+				getOrderHistoriesXHR.onload = function (event) {
+					if (this.status == 200 || this.status == 304)  jsonResponse = JSON.parse(this.responseText);
+					
+					let historyContainerInnerHTML = "";
+					historiesList = jsonResponse.data;
+					numberOfPages = jsonResponse.total_items / historiesPerPage;
+					paginateHistoryTab();
+					
+					for (let i = 0; i < historiesList.length; i++) {
+						historyContainerInnerHTML +=
+						
+						    "<tr class='alert' role='alert'> " +
+	
+						      "<td class='d-flex align-items-center' id='" + historiesList[i].order_id + ".historyContainer' data-bs-toggle='offcanvas' "+
+						      "data-bs-target='#offcanvasRight' aria-controls='offcanvasRight' onclick='showDetailedView(" + historiesList[i].order_details + ")'> " +
+						      	"<div class='img' style='background-image: url(" + historiesList[i].order_details[0].image_url + ");'></div> " +
+						      	"<div class='pl-3 email'> " +
+						      		"<span>" + historiesList.order_id + "</span> " +
+						      		"<span>Ordered on: " + historiesList[i].ordered_date + "</span> " +
+					      		"</div> " +
+						      "</td> " +
+						      "<td>" + historiesList.price + "</td> " +
+						      "<td class='status'><span class='active'>Successfull</span></td> " +
+	
+							"</tr> ";
+					}
+					
+					document.getElementById("history_container").innerHTML = historyContainerInnerHTML;
+					
+				}
+				
+				getOrderHistoriesXHR.send();
+			}
+			
+		}
+		
+		function paginateHistoryTab() {
+			const historyPaginateContainer = document.getElementById("pagination_container");
+			let output = "";
+			
+			output += "<a href='' onclick='getOrderHistories(" + currentPage-- + ")'>&laquo;</a>";
+			
+			for (let i = 0, start = 1; i < totalHistories;) {
+				if (start == 1) output += "<a class='active' href='getOrderHistories(" + start + ")'>" + start + "</a>";
+				else output += "<a href='getOrderHistories(" + start + ")'>" + start + "</a>";
+				
+				i += historiesPerPage;
+				start++;
+			}
+			
+			output += "<a href='getOrderHistories(" + currentPage++ + ")'>&raquo;</a>";
+		}
+		
+		
+	
+	</script>
+  -->
+			
+			
+

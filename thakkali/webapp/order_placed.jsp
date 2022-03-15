@@ -12,7 +12,7 @@
 
 <title>Order Placed</title>
 </head>
-<body>
+<body class="hyaku-height">
 
 	<%@ include file="check_login.jsp"%>
 	
@@ -70,11 +70,11 @@
 		
 		
 	</section>
-
+	
+	<section class="container-fluid bg-dark flex flex-column justify-content-center align-items-center" style="color: white;">
+		<%@ include file="bye_page.jsp" %>
+	</section>
+	
 </body>
 
-<footer class="text-center">
-	<%@ include file="contact_us.jsp" %>
-	<%@ include file="footer.jsp" %>
-</footer>
 </html>

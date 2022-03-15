@@ -1,4 +1,4 @@
-/*
+	/*
 	author: thiyan;
 	theme: image-display;
 	version: 1.0; 
@@ -8,14 +8,16 @@
 	margin: 0 0;
 	padding: 0 0;
 	font-family: sans-serif;
+	box-sizing: border-box;
 }
 
-.container {
+.container_custom {
 	width: 80%;
 	margin: 0 auto;
 }
 
-.logo {
+.push-down-container {
+	min-height: 100vh;
 }
 
 .logo img {
@@ -37,7 +39,7 @@ ul li {
 }
 
 h2 {
-	font-size: 1rem;
+	font-size: 3rem;
 }
 
 input[type="submit"]:hover {
@@ -322,5 +324,25 @@ input[type="submit"]:hover {
 	font-size: 1rem;
     border: 1px solid black;
 	border-radius: 5px;
+}
+
+footer {
+	color: white; 
+   background-color: #616161; 
+   padding: 0.625rem; 
+   display: block
+}
+
+footer p {
+	padding: 0.5rem;
+}
+
+footer a {
+	padding: 0.5rem;
+	font-weight: 400;
+}
+
+hyaku-height {
+	min-height: 80vh;
 }
 

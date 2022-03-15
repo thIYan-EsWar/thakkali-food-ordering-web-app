@@ -1,4 +1,4 @@
-<section class="container text-center">
+<section class="container text-center" >
     <div>
         <p>
             All rights reserved. This is a fun project.

@@ -1,0 +1,85 @@
+<div style="min-height: 70vh">
+						<!-- explore section -->
+						<section class="container">
+							<div>
+								<div class="search-result">
+									<ul>
+										<% if (session.getAttribute("foods") !=null) { Foods searched=(Foods)
+											session.getAttribute("searched_item"); if (searched !=null) { if
+											(searched.getFood_id() !=0) { if (searched.getAvailability()==0) {
+											out.println("<h2 style='padding: 2% 2%;' class='text-center'>" +
+											searched.getFood_name() + " is currently not available:( </h2>");
+											}
+
+											else {
+											String checkbox = searched.getFood_id() + "," + searched.getFood_name() +
+											","
+											+ searched.getPrice() + "," + searched.getAvailability();
+
+											String disabled = searched.getAvailability() > 0?"":"disabled='disabled'";
+
+											out.println(
+											        "<li><img src='" + searched.getImage_url() + "'" +
+													" alt=" + searched.getImage_alt() + "'" +
+													" height=10.9375rem width=15.625rem></li> " +
+											    "<div style='padding: 8% 0;'>" +
+												"<li><input type='checkbox' name='explore_foods'" +
+														"value='" + checkbox + "'" + disabled + "></li> " +
+												"<li>" + searched.getFood_name() + "</li> " +
+												"<li>" + searched.getFood_category() + "</li> " +
+												"<li>" + searched.getDescription() + "</li> " +
+												"<li>" + searched.getPrice() + "</li>" +
+												"</div>" +
+											"<p class='float-fix'></p>");
+
+											if (searched.getAvailability() <= 0) 
+												out.println( 
+														"<div style='color:red; font-size:0.625rem; text-align: left'> "
+														+ "<p>Food not available</p> " + "</div>" );   
+											else 
+												out.println("<h2 style='padding: 2% 2%;' class='text-center'>Food not Found :( </h2>");
+												
+												%>
+
+									</ul>
+								</div>
+
+								<div style="background-color: lightgray; padding: 4% 0; color:black;">
+									<div class="container">
+										<form action="order_foods" method="get">
+											<ul style="display: inline;">
+												<%
+													ArrayList<Foods> foods = (ArrayList<Foods>) session.getAttribute("foods");
+													String disabled = "";
+													String error = "";
+
+													for (Foods food: foods) {
+													if (food.getAvailability() == 0) {
+														disabled = "disabled";
+														error = "Food not available";
+													}
+
+													checkbox = food.getFood_id() + "," + food.getFood_name() + "," + food.getPrice() + "," + food.getAvailability();
+
+													out.println(
+													"<li> <div class='explore-foods'> <ul>" +
+														"<li> <img scrc='" + food.getImage_url() + "' alt='" + food.getImage_alt() + "'> </li>" +
+														"<li><input type='checkbox' name='explore_foods' value='" + checkbox + "' " + disabled + "> </li> " +
+														"<li> <div style='color:red; font-size:1rem; text-align: left'> <p>"+ error +"</p> </div> </li>" +
+														"<li>" + food.getFood_name() + "</li> " +
+														"<li>" + food.getFood_category() + "</li> " +
+														"<li>" + food.getDescription() + "</li> " +
+														"<li>Rs." + food.getPrice() + "</li> " +
+														"</ul> </div> <p class='float-fix'></p></li>");
+													}
+													%>
+
+											</ul>
+											<br>
+
+											<input type="submit" value="order"
+												style="width: 20%; padding: 1%; margin: 0 auto;"
+												class="container button-style">
+										</form>
+									</div>
+								</div>
